@@ -11,7 +11,7 @@ public class RSolver {
 	private static double[][] dist;
 	private static double[][] durationMatrix;
 	private static Node depot;
-	private static double durationLimit = 210;
+	private static double durationLimit;
 	private int cap15;
 	private int cap12;
 	private boolean inserted12;
@@ -61,6 +61,7 @@ public class RSolver {
 		Node lastCandidate=depot;
 		Route route = new Route();
 		route.cust.add(depot);
+		durationLimit = 210;
 		for (int insertions = 0; insertions < customers.size();) {
 			
 			CustomerInsertion bestInsertion = new CustomerInsertion();
@@ -73,9 +74,7 @@ public class RSolver {
 				insertions++;
 				lastCandidate = bestInsertion.customer;
 			}else {
-				if (route!=null && route.cust.size() == 2) {
 					modelIsFeasible = false;
-				} 
 			}
 			if (modelIsFeasible == false) {
 				s.routes.add(route);
@@ -95,7 +94,10 @@ public class RSolver {
 		}
 		
 		double total_cost = objectiveFunction(s);
-		System.out.print(total_cost + "/" );
+		System.out.println(total_cost);
+		for (int i = 0; i<s.routes.size(); i++) {
+			System.out.println(s.routes.get(i).load);
+		}
 	}
 	
 	
@@ -109,8 +111,6 @@ public class RSolver {
 				if ((route.load + candidate.demand<=cap12) && numberofTrucks12>0 && inserted12==true){
 					double duration = durationMatrix[lastcand.ID][candidate.ID];
 					if (route.duration+duration<durationLimit) {
-						route.duration += duration;
-						
 						double trialCost = dist[lastcand.ID][candidate.ID];
 						if (trialCost < bestInsertion.cost) {
 							bestInsertion.customer = candidate;
@@ -155,9 +155,9 @@ public class RSolver {
 		int FNode;
 		int TNode;
 		for(int i=0; i< s.routes.size(); i++ ) {
-			for (int j=0; j< s.routes.get(i).cust.size(); j+=2) {
-				FNode = s.routes.get(i).cust.get(j).ID;
-				TNode = s.routes.get(i).cust.get(j+1).ID;
+			for (int j=1; j< s.routes.get(i).cust.size(); j++) {
+				FNode = s.routes.get(i).cust.get(j-1).ID;
+				TNode = s.routes.get(i).cust.get(j).ID;
 				sum += dist[FNode][TNode];
 			}
 		}
