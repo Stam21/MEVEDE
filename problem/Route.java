@@ -3,15 +3,15 @@ package com.vehiclerouting.problem;
 import java.util.ArrayList;
 
 public class Route {
-	ArrayList<Node> customers;
+	ArrayList<Node> cust;
 	double cost;
-	Truck truck;
+	double load;
 	double duration;
 	
 	public Route() {
-		customers = new ArrayList<>();
+		cust = new ArrayList<>();
 		cost=0;
-		truck = new Truck();
+		load =0;
 		duration =0;
 	}
 	
